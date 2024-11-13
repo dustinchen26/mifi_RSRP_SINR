@@ -8,7 +8,7 @@ online tool => https://dustinchen26.github.io/mifi_RSRP_SINR
 step0. Set the UE time correctly. ex:
 date -s "2024-08-20 09:03:50"
 step1. MobaXterm Session -> SSH -> Termnial settings -> Select "Log terminal output to": _DesktopDir_
-step2. ssh into CPE. ex: 10.205.164.22
+step2. ssh into mifi. ex: 10.205.164.22
 step3. "Mifi" use below command to run 10 times
 watch -n 1 'echo "$(date "+%Y-%m-%d %H:%M:%S")"; atcli at+cesqdbm'
 step4. paste the _DesktopDir_ output file content below to parse

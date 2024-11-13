@@ -18,32 +18,20 @@
       font-size: 14px;
     }
 
-    table {
-      border-collapse: collapse;
-      width: auto;
-      margin: 15px;
-    }
-
-    th,
-    td {
-      border: 1px solid #dddddd;
-      text-align: left;
-      padding: 6px;
+    canvas {
+      width: 900px;
+      height: 400px;
+      max-width: 100%; /* 適應小屏幕 */
+      margin: 5px auto;
+      display: block;
     }
 
     .red {
-      color: red;
+      color: red; /* 將紅色樣式正確應用於該class */
     }
-
-  canvas {
-    width: 900px;
-    height: 600px;
-    max-width: 100%; /* 適應小屏幕 */
-    margin: 20px auto;
-    display: block;
-  }
+	
+	
   </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     function parseLog() {
@@ -63,58 +51,96 @@
         }
       }
 
-      // Plot the data
-      plotData(timeData, rsrpData, sinrData);
+      // Plot the data separately for RSRP and SINR
+      plotRSRPData(timeData, rsrpData);
+      plotSINRData(timeData, sinrData);
     }
 
-function plotData(timeData, rsrpData, sinrData) {
-  // 先檢查 myChart 是否已經存在並且是 Chart 實例
-  if (window.myChart instanceof Chart) {
-    window.myChart.destroy();
-  }
-
-  // 創建新圖表
-  const ctx = document.getElementById('myChart').getContext('2d');
-  window.myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: timeData,
-      datasets: [
-        {
-          label: 'RSRP (dBm)',
-          data: rsrpData,
-          borderColor: 'blue',
-          fill: false
-        },
-        {
-          label: 'SINR (dB)',
-          data: sinrData,
-          borderColor: 'green',
-          fill: false
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        x: {
-          type: 'category',
-          title: {
-            display: true,
-            text: 'Time'
-          }
-        },
-        y: {
-          title: {
-            display: true,
-            text: 'RSRP & SINR'
-          }
-        }
+    function plotRSRPData(timeData, rsrpData) {
+      // Check if myChartRSRP already exists and is a Chart instance
+      if (window.myChartRSRP instanceof Chart) {
+        window.myChartRSRP.destroy();
       }
-    }
-  });
-}
 
+      const ctx = document.getElementById('myChartRSRP').getContext('2d');
+      window.myChartRSRP = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: timeData,
+          datasets: [
+            {
+              label: 'RSRP (dBm)',
+              data: rsrpData,
+              borderColor: 'blue',
+              borderWidth: 1, // Adjust line thickness here
+              fill: false,
+              pointRadius: 0  // Hide points on the line
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: {
+              type: 'category',
+              title: {
+                display: true,
+                text: 'Time'
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'RSRP (dBm)'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function plotSINRData(timeData, sinrData) {
+      // Check if myChartSINR already exists and is a Chart instance
+      if (window.myChartSINR instanceof Chart) {
+        window.myChartSINR.destroy();
+      }
+
+      const ctx = document.getElementById('myChartSINR').getContext('2d');
+      window.myChartSINR = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: timeData,
+          datasets: [
+            {
+              label: 'SINR (dB)',
+              data: sinrData,
+              borderColor: 'green',
+              borderWidth: 1, // Adjust line thickness here
+              fill: false,
+              pointRadius: 0  // Hide points on the line
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: {
+              type: 'category',
+              title: {
+                display: true,
+                text: 'Time'
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'SINR (dB)'
+              }
+            }
+          }
+        }
+      });
+    }
   </script>
 </head>
 
@@ -123,11 +149,28 @@ function plotData(timeData, rsrpData, sinrData) {
   <p style="margin: 0;">Author: Dustin_Chen, email: <a href="mailto:Dustin_Chen@compal.com"
       style="line-height: 1;">Dustin_Chen@compal.com</a> or <a href="mailto:chuhpsdustin@gmail.com"
       style="line-height: 1;">chuhpsdustin@gmail.com</a></p>  
-  <br>	  
+  <ul>
+    <li><strong>【How to use】</strong>
+      <ul>
+        <li>step0. Set the UE time correctly. ex:<br>
+          <span class="red">date -s "2024-08-20 09:03:50"</span>
+        </li>
+        <li>step1. MobaXterm Session -> SSH -> Terminal settings -> Select "Log terminal output to": _DesktopDir_</li>
+        <li>step2. ssh into mifi. ex: 10.205.164.22 </li>
+        <li>step3. "Mifi" use below command to run 10 times <br>
+          <span class="red">watch -n 1 'echo "$(date "+%Y-%m-%d %H:%M:%S")"; atcli at+cesqdbm'</span>
+        </li>
+        <li>step4. paste the _DesktopDir_ output file content below to parse</li>
+	  </ul>
   <textarea id="logInput" rows="10" cols="80"></textarea>
   <br>
   <button onclick="parseLog()">Parse and Plot</button>
-  <canvas id="myChart"></canvas>
+  <h3>RSRP (dBm)</h3>
+  <canvas id="myChartRSRP"></canvas>
+  <h3>SINR (dB)</h3>
+  <canvas id="myChartSINR"></canvas>	  
+    </li>
+</ul>
 </body>
 
 </html>
