@@ -1,0 +1,133 @@
+<!-- 
+  Copyright © [2023] [Dustin_Chen]. All rights reserved.
+  Author: Dustin_Chen
+  Email:  Dustin_Chen@compal.com or chuhpsdustin@gmail.com
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSRP and SINR Plot</title>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      line-height: 1.2;
+      font-size: 14px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: auto;
+      margin: 15px;
+    }
+
+    th,
+    td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 6px;
+    }
+
+    .red {
+      color: red;
+    }
+
+  canvas {
+    width: 900px;
+    height: 600px;
+    max-width: 100%; /* 適應小屏幕 */
+    margin: 20px auto;
+    display: block;
+  }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    function parseLog() {
+      var inputText = document.getElementById('logInput').value;
+
+      // Regular expression to match date, RSRP, and SINR
+      var regex = /(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})[\s\S]*?NR5G: RSRQ -\d+ dB, RSRP (-?\d+) dBm, SINR (\d+) dB/g;
+
+      var matches = inputText.matchAll(regex);
+      var timeData = [], rsrpData = [], sinrData = [];
+
+      for (const match of matches) {
+        if (match && match.length === 4) {
+          timeData.push(match[1]);        // Time
+          rsrpData.push(parseInt(match[2]));  // RSRP
+          sinrData.push(parseInt(match[3]));  // SINR
+        }
+      }
+
+      // Plot the data
+      plotData(timeData, rsrpData, sinrData);
+    }
+
+function plotData(timeData, rsrpData, sinrData) {
+  // 先檢查 myChart 是否已經存在並且是 Chart 實例
+  if (window.myChart instanceof Chart) {
+    window.myChart.destroy();
+  }
+
+  // 創建新圖表
+  const ctx = document.getElementById('myChart').getContext('2d');
+  window.myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: timeData,
+      datasets: [
+        {
+          label: 'RSRP (dBm)',
+          data: rsrpData,
+          borderColor: 'blue',
+          fill: false
+        },
+        {
+          label: 'SINR (dB)',
+          data: sinrData,
+          borderColor: 'green',
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+          type: 'category',
+          title: {
+            display: true,
+            text: 'Time'
+          }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'RSRP & SINR'
+          }
+        }
+      }
+    }
+  });
+}
+
+  </script>
+</head>
+
+<body>
+  <h2>RSRP and SINR Plot</h2>
+  <p style="margin: 0;">Author: Dustin_Chen, email: <a href="mailto:Dustin_Chen@compal.com"
+      style="line-height: 1;">Dustin_Chen@compal.com</a> or <a href="mailto:chuhpsdustin@gmail.com"
+      style="line-height: 1;">chuhpsdustin@gmail.com</a></p>  
+  <br>	  
+  <textarea id="logInput" rows="10" cols="80"></textarea>
+  <br>
+  <button onclick="parseLog()">Parse and Plot</button>
+  <canvas id="myChart"></canvas>
+</body>
+
+</html>
