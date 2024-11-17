@@ -1,9 +1,3 @@
-<!-- 
-  Copyright © [2023] [Dustin_Chen]. All rights reserved.
-  Author: Dustin_Chen
-  Email:  Dustin_Chen@compal.com or chuhpsdustin@gmail.com
--->
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -35,27 +29,29 @@
     function parseLog() {
       var inputText = document.getElementById('logInput').value;
 
-      // Regular expression to match date, RSRP, and SINR
-      var regex = /(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})[\s\S]*?NR5G: RSRQ -\d+ dB, RSRP (-?\d+) dBm, SINR (\d+) dB/g;
+      // 正則表達式來精確捕獲 RSRP 和 SINR 數值
+      var regex = /(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})[\s\S]*?RSRQ\s*(-?\d+)\s*dB,\s*RSRP\s*(-?\d+)\s*dBm,\s*SINR\s*(\d+)\s*dB/g;
 
       var matches = inputText.matchAll(regex);
       var timeData = [], rsrpData = [], sinrData = [];
 
+      // 遍歷匹配的數據
       for (const match of matches) {
-        if (match && match.length === 4) {
-          timeData.push(match[1]);        // Time
-          rsrpData.push(parseInt(match[2]));  // RSRP
-          sinrData.push(parseInt(match[3]));  // SINR
+        if (match && match.length === 5) {
+          // 提取時間、RSRP 和 SINR
+          timeData.push(match[1]);        // 時間戳
+          rsrpData.push(parseInt(match[3]));  // RSRP 數值
+          sinrData.push(parseInt(match[4]));  // SINR 數值
         }
       }
 
-      // Plot the data separately for RSRP and SINR
+      // 用提取的數據繪製圖表
       plotRSRPData(timeData, rsrpData);
       plotSINRData(timeData, sinrData);
     }
 
     function plotRSRPData(timeData, rsrpData) {
-      // Check if myChartRSRP already exists and is a Chart instance
+      // 檢查 myChartRSRP 是否已經存在並銷毀它
       if (window.myChartRSRP instanceof Chart) {
         window.myChartRSRP.destroy();
       }
@@ -64,12 +60,12 @@
       window.myChartRSRP = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: timeData,
+          labels: timeData,  // 使用時間戳作為 x 軸的標籤
           datasets: [
             {
               label: 'RSRP (dBm)',
               data: rsrpData,
-              borderColor: 'rgba(255, 0, 0, 1)',  // 紅色折線圖
+              borderColor: 'rgba(255, 0, 0, 1)',  // 紅色折線
               backgroundColor: 'rgba(255, 99, 71, 0.2)',  // 淺紅色背景
               borderWidth: 1, // 調整折線寬度
               fill: true,  // 開啟背景填充
@@ -85,6 +81,11 @@
               title: {
                 display: true,
                 text: 'Time'
+              },
+              ticks: {
+                autoSkip: true,  // 自動跳過過於擁擠的時間標籤
+                maxRotation: 45,  // 限制標籤最大旋轉角度
+                minRotation: 45   // 限制標籤最小旋轉角度
               }
             },
             y: {
@@ -99,7 +100,7 @@
     }
 
     function plotSINRData(timeData, sinrData) {
-      // Check if myChartSINR already exists and is a Chart instance
+      // 檢查 myChartSINR 是否已經存在並銷毀它
       if (window.myChartSINR instanceof Chart) {
         window.myChartSINR.destroy();
       }
@@ -108,14 +109,14 @@
       window.myChartSINR = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: timeData,
+          labels: timeData,  // 使用時間戳作為 x 軸的標籤
           datasets: [
             {
               label: 'SINR (dB)',
               data: sinrData,
-              borderColor: 'green',
+              borderColor: 'green',  // 綠色折線
               borderWidth: 1, // 調整折線寬度
-              fill: false,
+              fill: false,  // 無背景填充
               pointRadius: 0  // 隱藏折線圖上的點
             }
           ]
@@ -128,6 +129,11 @@
               title: {
                 display: true,
                 text: 'Time'
+              },
+              ticks: {
+                autoSkip: true,  // 自動跳過過於擁擠的時間標籤
+                maxRotation: 45,  // 限制標籤最大旋轉角度
+                minRotation: 45   // 限制標籤最小旋轉角度
               }
             },
             y: {
