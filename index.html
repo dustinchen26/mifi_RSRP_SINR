@@ -29,8 +29,6 @@
     .red {
       color: red; /* 將紅色樣式正確應用於該class */
     }
-	
-	
   </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
@@ -71,10 +69,11 @@
             {
               label: 'RSRP (dBm)',
               data: rsrpData,
-              borderColor: 'blue',
-              borderWidth: 1, // Adjust line thickness here
-              fill: false,
-              pointRadius: 0  // Hide points on the line
+              borderColor: 'rgba(255, 0, 0, 1)',  // 紅色折線圖
+              backgroundColor: 'rgba(255, 99, 71, 0.2)',  // 淺紅色背景
+              borderWidth: 1, // 調整折線寬度
+              fill: true,  // 開啟背景填充
+              pointRadius: 0  // 隱藏折線圖上的點
             }
           ]
         },
@@ -115,9 +114,9 @@
               label: 'SINR (dB)',
               data: sinrData,
               borderColor: 'green',
-              borderWidth: 1, // Adjust line thickness here
+              borderWidth: 1, // 調整折線寬度
               fill: false,
-              pointRadius: 0  // Hide points on the line
+              pointRadius: 0  // 隱藏折線圖上的點
             }
           ]
         },
@@ -146,9 +145,7 @@
 
 <body>
   <h2>mifi RSRP and SINR Plot</h2>
-  <p style="margin: 0;">Author: Dustin_Chen, email: <a href="mailto:Dustin_Chen@compal.com"
-      style="line-height: 1;">Dustin_Chen@compal.com</a> or <a href="mailto:chuhpsdustin@gmail.com"
-      style="line-height: 1;">chuhpsdustin@gmail.com</a></p>  
+  <p style="margin: 0;">Author: Dustin_Chen, email: <a href="mailto:Dustin_Chen@compal.com" style="line-height: 1;">Dustin_Chen@compal.com</a> or <a href="mailto:chuhpsdustin@gmail.com" style="line-height: 1;">chuhpsdustin@gmail.com</a></p>
   <ul>
     <li><strong>【How to use】</strong>
       <ul>
@@ -161,16 +158,16 @@
           <span class="red">watch -n 1 'echo "$(date "+%Y-%m-%d %H:%M:%S")"; atcli at+cesqdbm'</span>
         </li>
         <li>step4. paste the _DesktopDir_ output file content below to parse</li>
-	  </ul>
+      </ul>
+    </li>
+  </ul>
   <textarea id="logInput" rows="10" cols="80"></textarea>
   <br>
   <button onclick="parseLog()">Parse and Plot</button>
   <h3>RSRP (dBm)</h3>
   <canvas id="myChartRSRP"></canvas>
   <h3>SINR (dB)</h3>
-  <canvas id="myChartSINR"></canvas>	  
-    </li>
-</ul>
+  <canvas id="myChartSINR"></canvas>
 </body>
 
 </html>
