@@ -16,21 +16,33 @@
       font-family: 'Roboto', sans-serif;
       line-height: 1.2;
       font-size: 14px;
+      margin: 0;
+      padding: 20px;
     }
 
     canvas {
       width: 100%;  /* 保證canvas會填滿容器的寬度 */
       height: 500px;  /* 調整高度來放大圖表 */
       max-width: 600px; /* 增加最大寬度 */
-      margin: 5px;
+      margin: 5px 0;
       display: block;
     }
 
     .chart-container {
       display: flex;
-      justify-content: space-between;
-      gap: 10px;  /* 減少圖表之間的間距，設置為 10px */
+      justify-content: flex-start;
+      gap: 20px;  /* 增加圖表間距 */
       flex-wrap: wrap; /* 當屏幕較窄時，允許換行 */
+    }
+
+    .chart-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;  /* 讓文字和圖表靠左排列 */
+    }
+
+    h3 {
+      margin: 0 0 10px 0;  /* 標題距離圖表間隔 */
     }
 
     .red {
@@ -179,21 +191,23 @@
         <li>step4. paste the _DesktopDir_ output file content below to parse</li>
       </ul>
     </li>
-  </ul>
-  <textarea id="logInput" rows="10" cols="80"></textarea>
+	  <textarea id="logInput" rows="10" cols="80"></textarea>
   <br>
   <button onclick="parseLog()">Parse and Plot</button>
 
   <div class="chart-container">
-    <div>
-  <h3>RSRP (dBm)</h3>
-  <canvas id="myChartRSRP"></canvas>
+    <div class="chart-item">
+      <h3>RSRP (dBm)</h3>
+      <canvas id="myChartRSRP"></canvas>
     </div>
-    <div>
-  <h3>SINR (dB)</h3>
-  <canvas id="myChartSINR"></canvas>
+    <div class="chart-item">
+      <h3>SINR (dB)</h3>
+      <canvas id="myChartSINR"></canvas>
     </div>
   </div>
+  
+  </ul>
+
 </body>
 
 </html>
