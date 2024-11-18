@@ -19,11 +19,18 @@
     }
 
     canvas {
-      width: 900px;
-      height: 400px;
-      max-width: 100%; /* 適應小屏幕 */
-      margin: 5px auto;
+      width: 100%;  /* 保證canvas會填滿容器的寬度 */
+      height: 500px;  /* 調整高度來放大圖表 */
+      max-width: 600px; /* 增加最大寬度 */
+      margin: 5px;
       display: block;
+    }
+
+    .chart-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;  /* 減少圖表之間的間距，設置為 10px */
+      flex-wrap: wrap; /* 當屏幕較窄時，允許換行 */
     }
 
     .red {
@@ -176,10 +183,17 @@
   <textarea id="logInput" rows="10" cols="80"></textarea>
   <br>
   <button onclick="parseLog()">Parse and Plot</button>
+
+  <div class="chart-container">
+    <div>
   <h3>RSRP (dBm)</h3>
   <canvas id="myChartRSRP"></canvas>
+    </div>
+    <div>
   <h3>SINR (dB)</h3>
   <canvas id="myChartSINR"></canvas>
+    </div>
+  </div>
 </body>
 
 </html>
